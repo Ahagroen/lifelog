@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"context"
 	"fmt"
-	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -63,31 +62,20 @@ func main() {
 				Action: func(ctx context.Context, cmd *cli.Command) error {
 					filter := false
 					if cmd.Args().Len() > 0 {
-						fmt.Println(cmd.Args().Get(0))
 						filter = true
 					}
 					scanner := bufio.NewScanner(file)
-					buf := make([]byte, 1024)
-					for {
-						n, err := file.Read(buf)
-						if err == io.EOF {
-							break
-						}
-						check(err)
-						if n > 0 {
-							if filter {
-								filter_text := fmt.Sprintf("@%v", cmd.Args().Get(0))
-								fmt.Println(filter_text)
-								match, err := re.Match(filter_text, buf[:n])
-								check(err)
-								if match {
-									fmt.Println(string(buf[:n]))
-								} else {
-									fmt.Println("Nope")
-								}
+					for scanner.Scan() {
+						if filter {
+							filter_text := fmt.Sprintf("@%v", cmd.Args().Get(0))
+							match, err := re.Match(filter_text, []byte(scanner.Text()))
+							check(err)
+							if match {
+								fmt.Println(scanner.Text())
 							} else {
-								fmt.Println(string(buf[:n]))
 							}
+						} else {
+							fmt.Println(scanner.Text())
 						}
 					}
 					return nil

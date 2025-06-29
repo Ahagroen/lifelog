@@ -1,4 +1,4 @@
-module github.com/ahagroen/quickjrnl
+module github.com/ahagroen/lifelog
 
 go 1.24.4
 
