@@ -54,6 +54,7 @@ func main() {
 					check(err)
 					err = file.Sync()
 					check(err)
+					fmt.Println("Logged!")
 					return nil
 				},
 			},
